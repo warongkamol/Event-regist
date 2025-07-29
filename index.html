@@ -43,12 +43,6 @@
         .form-section, .game-section {
             flex: 1;
             padding: 1rem;
-            /* Ensure game-section takes full available height and centers content */
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Centers horizontally */
-            justify-content: center; /* Centers vertically */
-            min-height: 400px; /* Ensure minimum height for the canvas */
         }
         /* Form group styling for spacing */
         .form-group {
@@ -129,8 +123,8 @@
 
         /* Spinning Wheel Styles */
         #wheelCanvas {
-            display: block; /* Important for margin:auto to work horizontally */
-            margin: auto; /* Centers the canvas itself within the flex parent */
+            display: block;
+            margin: 0 auto;
             border: 5px solid #6366f1; /* Indigo border */
             border-radius: 50%;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
