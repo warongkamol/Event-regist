@@ -15,8 +15,8 @@
             background-color: #f0f2f5; /* Light gray background */
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            align-items: center; /* Centers the container vertically */
+            min-height: 100vh; /* Ensures body takes full viewport height */
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
@@ -30,7 +30,7 @@
             width: 100%;
             padding: 2.5rem; /* More padding */
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Default to column on mobile */
             gap: 2rem;
         }
         /* Media query for larger screens to arrange sections side-by-side */
@@ -48,7 +48,7 @@
             flex-direction: column;
             align-items: center; /* Centers horizontally */
             justify-content: center; /* Centers vertically */
-            min-height: 400px; /* Ensure minimum height for the canvas */
+            min-height: 400px; /* Ensure minimum height for the canvas to avoid layout shift */
         }
         /* Form group styling for spacing */
         .form-group {
@@ -277,7 +277,7 @@
         </div>
 
         <!-- Spinning Wheel Game Section -->
-        <div id="gameSection" class="game-section flex flex-col items-center justify-center hidden">
+        <div id="gameSection" class="game-section hidden">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">หมุนวงล้อลุ้นรางวัล!</h2>
             <canvas id="wheelCanvas" width="400" height="400"></canvas>
             <button id="spinWheelBtn" class="spin-button" disabled>หมุนวงล้อ!</button>
@@ -531,7 +531,27 @@
         }
 
         const segments = calculateSegmentAngles();
-        const wheelRadius = wheelCanvas.width / 2 - 5; // Slightly smaller radius for border
+        // The radius should be based on the canvas dimensions
+        // We'll calculate it dynamically to ensure responsiveness
+        let wheelRadius; 
+        
+        // Function to update canvas dimensions and redraw wheel
+        function updateCanvasDimensions() {
+            // Get the actual rendered size of the canvas element from CSS
+            const canvasComputedStyle = window.getComputedStyle(wheelCanvas);
+            const canvasWidth = parseFloat(canvasComputedStyle.width);
+            const canvasHeight = parseFloat(canvasComputedStyle.height);
+
+            // Set the drawing buffer size to match the displayed size
+            wheelCanvas.width = canvasWidth;
+            wheelCanvas.height = canvasHeight;
+
+            // Recalculate wheelRadius based on the new canvas dimensions
+            // Use the smaller of width/height to ensure the wheel fits
+            wheelRadius = Math.min(wheelCanvas.width, wheelCanvas.height) / 2 - 5; // -5 for border
+            
+            drawWheel(); // Redraw the wheel with new dimensions
+        }
 
         // Draws the spinning wheel on the canvas
         function drawWheel() {
@@ -539,7 +559,8 @@
             
             // Draw the wheel segments (this part rotates)
             ctx.save(); // Save the current canvas state
-            ctx.translate(wheelRadius + 5, wheelRadius + 5); // Move origin to the center of the wheel
+            // Translate to the actual center of the canvas
+            ctx.translate(wheelCanvas.width / 2, wheelCanvas.height / 2); 
             ctx.rotate(currentRotation); // Apply current rotation to the wheel
             
             segments.forEach((segment, index) => {
@@ -569,6 +590,7 @@
             // It's drawn relative to the fixed canvas coordinates
             ctx.beginPath();
             // Adjust pointer position to be to the right of the wheel center
+            // The pointer should be relative to the canvas's actual dimensions
             const pointerX = wheelCanvas.width - 20; // X position of the pointer tip
             const pointerY = wheelCanvas.height / 2; // Y position of the pointer tip (center of canvas height)
             const pointerBaseOffset = 30; // How far back the base of the triangle is from the tip
@@ -605,7 +627,14 @@
 
             // Calculate the target angle for the wheel to stop
             // Ensures the wheel stops within the winning segment, with some randomness
-            const targetAngle = Math.PI * 2 * APP_CONFIG.minSpins + (Math.PI * 2 - winningSegment.midAngle) + Math.random() * (Math.PI / segments.length) - (Math.PI / (2 * segments.length));
+            // The pointer is at the right edge, which corresponds to an angle of 0 or 2*PI.
+            // We need the winning segment's midAngle to align with the pointer.
+            // So, target angle = (N full spins * 2*PI) + (2*PI - midAngle of winning segment)
+            // Add some random offset within the segment for more natural stop
+            const segmentAngleSize = (winningSegment.endAngle - winningSegment.startAngle);
+            const randomOffsetWithinSegment = Math.random() * segmentAngleSize - (segmentAngleSize / 2); // Random offset around the mid of the segment
+
+            const targetAngle = (Math.PI * 2 * APP_CONFIG.minSpins) + (Math.PI * 2 - winningSegment.midAngle) + randomOffsetWithinSegment;
             
             // Apply CSS transition for smooth spinning animation
             wheelCanvas.style.transition = `transform ${APP_CONFIG.spinSpeed / 1000}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
@@ -690,7 +719,10 @@
         // Initialization function called when the window loads
         window.onload = function() {
             generateFormFields(); // Generate form fields dynamically
-            drawWheel(); // Draw the initial state of the wheel
+            updateCanvasDimensions(); // Set initial canvas dimensions and draw
+            
+            // Add event listener for window resize to make canvas responsive
+            window.addEventListener('resize', updateCanvasDimensions);
         };
     </script>
 </body>
