@@ -15,8 +15,8 @@
             background-color: #f0f2f5; /* Light gray background */
             display: flex;
             justify-content: center;
-            align-items: center; /* Centers the container vertically */
-            min-height: 100vh; /* Ensures body takes full viewport height */
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
@@ -30,7 +30,7 @@
             width: 100%;
             padding: 2.5rem; /* More padding */
             display: flex;
-            flex-direction: column; /* Default to column on mobile */
+            flex-direction: column;
             gap: 2rem;
         }
         /* Media query for larger screens to arrange sections side-by-side */
@@ -48,7 +48,7 @@
             flex-direction: column;
             align-items: center; /* Centers horizontally */
             justify-content: center; /* Centers vertically */
-            min-height: 400px; /* Ensure minimum height for the canvas to avoid layout shift */
+            min-height: 400px; /* Ensure minimum height for the canvas */
         }
         /* Form group styling for spacing */
         .form-group {
@@ -135,9 +135,6 @@
             border-radius: 50%;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smooth spin transition */
-            /* Make canvas responsive */
-            max-width: 100%; /* Ensure it scales down on smaller screens */
-            height: auto; /* Maintain aspect ratio */
         }
         /* Spin button styling */
         .spin-button {
@@ -277,7 +274,7 @@
         </div>
 
         <!-- Spinning Wheel Game Section -->
-        <div id="gameSection" class="game-section hidden">
+        <div id="gameSection" class="game-section flex flex-col items-center justify-center hidden">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">หมุนวงล้อลุ้นรางวัล!</h2>
             <canvas id="wheelCanvas" width="400" height="400"></canvas>
             <button id="spinWheelBtn" class="spin-button" disabled>หมุนวงล้อ!</button>
@@ -531,38 +528,15 @@
         }
 
         const segments = calculateSegmentAngles();
-        // The radius should be based on the canvas dimensions
-        // We'll calculate it dynamically to ensure responsiveness
-        let wheelRadius; 
-        
-        // Function to update canvas dimensions and redraw wheel
-        function updateCanvasDimensions() {
-            // Get the actual rendered size of the canvas element from CSS
-            const canvasComputedStyle = window.getComputedStyle(wheelCanvas);
-            const canvasWidth = parseFloat(canvasComputedStyle.width);
-            const canvasHeight = parseFloat(canvasComputedStyle.height);
-
-            // Set the drawing buffer size to match the displayed size
-            wheelCanvas.width = canvasWidth;
-            wheelCanvas.height = canvasHeight;
-
-            // Recalculate wheelRadius based on the new canvas dimensions
-            // Use the smaller of width/height to ensure the wheel fits
-            wheelRadius = Math.min(wheelCanvas.width, wheelCanvas.height) / 2 - 5; // -5 for border
-            
-            drawWheel(); // Redraw the wheel with new dimensions
-        }
+        const wheelRadius = wheelCanvas.width / 2 - 5; // Slightly smaller radius for border
 
         // Draws the spinning wheel on the canvas
         function drawWheel() {
             ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
-            
-            // Draw the wheel segments (this part rotates)
-            ctx.save(); // Save the current canvas state
-            // Translate to the actual center of the canvas
-            ctx.translate(wheelCanvas.width / 2, wheelCanvas.height / 2); 
-            ctx.rotate(currentRotation); // Apply current rotation to the wheel
-            
+            ctx.save();
+            ctx.translate(wheelRadius + 5, wheelRadius + 5); // Move origin to the center of the wheel
+            ctx.rotate(currentRotation); // Apply current rotation
+
             segments.forEach((segment, index) => {
                 ctx.beginPath();
                 ctx.arc(0, 0, wheelRadius, segment.startAngle, segment.endAngle);
@@ -575,30 +549,22 @@
                 ctx.stroke();
 
                 // Draw text for each segment
-                ctx.save(); // Save state again for text rotation
+                ctx.save();
                 ctx.rotate(segment.midAngle);
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#000'; // Text color
                 ctx.font = 'bold 16px Inter';
                 ctx.fillText(segment.text, wheelRadius * 0.8, 0); // Position text
-                ctx.restore(); // Restore state after text rotation
+                ctx.restore();
             });
 
-            ctx.restore(); // Restore canvas state after wheel drawing (removes wheel rotation)
+            ctx.restore();
 
-            // Draw the pointer (triangle) - This part should NOT rotate with the wheel
-            // It's drawn relative to the fixed canvas coordinates
+            // Draw the pointer (triangle)
             ctx.beginPath();
-            // Adjust pointer position to be to the right of the wheel center
-            // The pointer should be relative to the canvas's actual dimensions
-            const pointerX = wheelCanvas.width - 20; // X position of the pointer tip
-            const pointerY = wheelCanvas.height / 2; // Y position of the pointer tip (center of canvas height)
-            const pointerBaseOffset = 30; // How far back the base of the triangle is from the tip
-            const pointerHalfWidth = 15; // Half width of the triangle base
-
-            ctx.moveTo(pointerX, pointerY);
-            ctx.lineTo(pointerX - pointerBaseOffset, pointerY - pointerHalfWidth);
-            ctx.lineTo(pointerX - pointerBaseOffset, pointerY + pointerHalfWidth);
+            ctx.moveTo(wheelCanvas.width - 20, wheelCanvas.height / 2);
+            ctx.lineTo(wheelCanvas.width - 50, wheelCanvas.height / 2 - 15);
+            ctx.lineTo(wheelCanvas.width - 50, wheelCanvas.height / 2 + 15);
             ctx.closePath();
             ctx.fillStyle = '#FF0000'; // Red color for the pointer
             ctx.fill();
@@ -627,14 +593,7 @@
 
             // Calculate the target angle for the wheel to stop
             // Ensures the wheel stops within the winning segment, with some randomness
-            // The pointer is at the right edge, which corresponds to an angle of 0 or 2*PI.
-            // We need the winning segment's midAngle to align with the pointer.
-            // So, target angle = (N full spins * 2*PI) + (2*PI - midAngle of winning segment)
-            // Add some random offset within the segment for more natural stop
-            const segmentAngleSize = (winningSegment.endAngle - winningSegment.startAngle);
-            const randomOffsetWithinSegment = Math.random() * segmentAngleSize - (segmentAngleSize / 2); // Random offset around the mid of the segment
-
-            const targetAngle = (Math.PI * 2 * APP_CONFIG.minSpins) + (Math.PI * 2 - winningSegment.midAngle) + randomOffsetWithinSegment;
+            const targetAngle = Math.PI * 2 * APP_CONFIG.minSpins + (Math.PI * 2 - winningSegment.midAngle) + Math.random() * (Math.PI / segments.length) - (Math.PI / (2 * segments.length));
             
             // Apply CSS transition for smooth spinning animation
             wheelCanvas.style.transition = `transform ${APP_CONFIG.spinSpeed / 1000}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
@@ -719,10 +678,7 @@
         // Initialization function called when the window loads
         window.onload = function() {
             generateFormFields(); // Generate form fields dynamically
-            updateCanvasDimensions(); // Set initial canvas dimensions and draw
-            
-            // Add event listener for window resize to make canvas responsive
-            window.addEventListener('resize', updateCanvasDimensions);
+            drawWheel(); // Draw the initial state of the wheel
         };
     </script>
 </body>
