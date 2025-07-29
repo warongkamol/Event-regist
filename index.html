@@ -135,6 +135,9 @@
             border-radius: 50%;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smooth spin transition */
+            /* Make canvas responsive */
+            max-width: 100%; /* Ensure it scales down on smaller screens */
+            height: auto; /* Maintain aspect ratio */
         }
         /* Spin button styling */
         .spin-button {
@@ -533,10 +536,12 @@
         // Draws the spinning wheel on the canvas
         function drawWheel() {
             ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
-            ctx.save();
+            
+            // Draw the wheel segments (this part rotates)
+            ctx.save(); // Save the current canvas state
             ctx.translate(wheelRadius + 5, wheelRadius + 5); // Move origin to the center of the wheel
-            ctx.rotate(currentRotation); // Apply current rotation
-
+            ctx.rotate(currentRotation); // Apply current rotation to the wheel
+            
             segments.forEach((segment, index) => {
                 ctx.beginPath();
                 ctx.arc(0, 0, wheelRadius, segment.startAngle, segment.endAngle);
@@ -549,22 +554,29 @@
                 ctx.stroke();
 
                 // Draw text for each segment
-                ctx.save();
+                ctx.save(); // Save state again for text rotation
                 ctx.rotate(segment.midAngle);
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#000'; // Text color
                 ctx.font = 'bold 16px Inter';
                 ctx.fillText(segment.text, wheelRadius * 0.8, 0); // Position text
-                ctx.restore();
+                ctx.restore(); // Restore state after text rotation
             });
 
-            ctx.restore();
+            ctx.restore(); // Restore canvas state after wheel drawing (removes wheel rotation)
 
-            // Draw the pointer (triangle)
+            // Draw the pointer (triangle) - This part should NOT rotate with the wheel
+            // It's drawn relative to the fixed canvas coordinates
             ctx.beginPath();
-            ctx.moveTo(wheelCanvas.width - 20, wheelCanvas.height / 2);
-            ctx.lineTo(wheelCanvas.width - 50, wheelCanvas.height / 2 - 15);
-            ctx.lineTo(wheelCanvas.width - 50, wheelCanvas.height / 2 + 15);
+            // Adjust pointer position to be to the right of the wheel center
+            const pointerX = wheelCanvas.width - 20; // X position of the pointer tip
+            const pointerY = wheelCanvas.height / 2; // Y position of the pointer tip (center of canvas height)
+            const pointerBaseOffset = 30; // How far back the base of the triangle is from the tip
+            const pointerHalfWidth = 15; // Half width of the triangle base
+
+            ctx.moveTo(pointerX, pointerY);
+            ctx.lineTo(pointerX - pointerBaseOffset, pointerY - pointerHalfWidth);
+            ctx.lineTo(pointerX - pointerBaseOffset, pointerY + pointerHalfWidth);
             ctx.closePath();
             ctx.fillStyle = '#FF0000'; // Red color for the pointer
             ctx.fill();
