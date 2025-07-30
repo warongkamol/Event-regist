@@ -12,7 +12,8 @@
         /* Base styles for the body, ensuring centering and padding */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5; /* Light gray background */
+            
+            background-color: #3c96c7;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,7 +24,7 @@
         }
         /* Container for the main application, styled with shadow and rounded corners */
         .container {
-            background-color: #ffffff;
+            background-image: linear-gradient(135deg, #2e5a73 50%, #162c3b 100%);
             border-radius: 1.5rem; /* More rounded corners */
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             max-width: 900px; /* Increased max-width */
@@ -55,7 +56,7 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #333;
+            color: #fff;
         }
         /* Input and select field styling */
         .form-group input[type="text"],
@@ -81,19 +82,19 @@
         }
         /* Primary button styling */
         .btn-primary {
-            background-color: #6366f1; /* Indigo */
+            background-color: #33647e; /* Indigo */
             color: white;
             padding: 0.85rem 1.75rem; /* More padding */
             border-radius: 0.75rem;
             font-weight: 600;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 18px #18303d;
             cursor: pointer;
             width: 100%; /* Full width button */
         }
         /* Hover state for primary button */
         .btn-primary:hover {
-            background-color: #4f46e5; /* Darker indigo */
+            background-color: #74838b; /* Darker indigo */
             transform: translateY(-2px);
         }
         /* Active state for primary button */
@@ -102,13 +103,13 @@
         }
         /* Secondary button styling */
         .btn-secondary {
-            background-color: #e5e7eb; /* Light gray */
+            background-color: #74838b; /* Light gray */
             color: #4b5563; /* Darker gray text */
             padding: 0.85rem 1.75rem;
             border-radius: 0.75rem;
             font-weight: 600;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 18px #18303d;
             cursor: pointer;
             width: 100%; /* Full width button */
             margin-top: 1rem;
@@ -127,7 +128,7 @@
         #wheelCanvas {
             display: block;
             margin: 0 auto;
-            border: 5px solid #6366f1; /* Indigo border */
+            border: 10px solid #ffff9e; /* Indigo border */
             border-radius: 50%;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smooth spin transition */
@@ -136,7 +137,7 @@
         }
         /* Spin button styling */
         .spin-button {
-            background-color: #ef4444; /* Red */
+            background-color: #33647e; /* Red */
             color: white;
             padding: 1rem 2rem;
             border-radius: 9999px; /* Fully rounded */
@@ -144,13 +145,13 @@
             font-size: 1.25rem;
             margin-top: 1.5rem;
             transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);
+            box-shadow: 0 4px 18px #18303d;
             cursor: pointer;
             width: 100%;
         }
         /* Hover state for spin button */
         .spin-button:hover {
-            background-color: #dc2626; /* Darker red */
+            background-color: #74838b; /* Darker red */
             transform: translateY(-3px);
         }
         /* Active state for spin button */
@@ -250,7 +251,7 @@
             display: flex;
             align-items: center;
             font-weight: 400; /* Lighter font for individual checkbox labels */
-            color: #4b5563;
+            color: #fff;
             cursor: pointer;
         }
         .checkbox-group input[type="checkbox"] {
@@ -268,8 +269,8 @@
             height: 0;
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
-            border-top: 30px solid #FF0000; /* Red triangle pointing down */
-            z-index: 10; /* Ensure it's above the canvas */
+            border-top: 30px solid #ff4d00; /* Red triangle pointing down */
+            z-index: 10; /* Ensure it's above the canvas 
         }
 
         /* Adjust pointer position for mobile to be above the wheel */
@@ -285,17 +286,17 @@
     <div class="container">
         <!-- Customer Information Form Section -->
         <div id="formSection" class="form-section">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">กรอกข้อมูลเพื่อร่วมสนุก</h2>
+            <h2 class="text-3xl font-bold text-center text-white mb-6">กรอกข้อมูลเพื่อร่วมสนุก</h2>
             <form id="customerForm" class="space-y-4">
                 <!-- Form fields will be dynamically generated by JavaScript -->
             </form>
-            <button id="submitFormBtn" class="btn-primary mt-6">ส่งข้อมูลและเริ่มเกม</button>
+            <button id="submitFormBtn" class="btn-primary mt-6">เริ่มเกม</button>
             <div id="formErrorMessage" class="error-message text-center hidden"></div>
         </div>
 
         <!-- Spinning Wheel Game Section -->
         <div id="gameSection" class="game-section flex flex-col items-center justify-center hidden">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">หมุนวงล้อลุ้นรางวัล!</h2>
+            <h2 class="text-3xl font-bold text-center text-white mb-6">หมุนวงล้อลุ้นรางวัล!</h2>
             <div class="wheel-container relative">
                 <canvas id="wheelCanvas" width="400" height="400"></canvas>
                 <div class="wheel-pointer"></div> <!-- The new HTML pointer element -->
@@ -340,11 +341,11 @@
             // color: The color of the segment (Hex code or color name)
             // weight: The probability weight (all set to 1 for equal segments)
             wheelSegments: [
-                { text: 'รางวัลใหญ่!', color: '#FFD700', weight: 1 }, // Gold
-                { text: 'ส่วนลด 50%', color: '#FF6347', weight: 1 }, // Tomato
-                { text: 'บัตรกำนัล 100 บาท', color: '#4682B4', weight: 1 }, // SteelBlue
-                { text: 'ของที่ระลึก', color: '#32CD32', weight: 1 }, // LimeGreen
-                { text: 'ลองใหม่!', color: '#D3D3D3', weight: 1 } // LightGray
+                { text: 'หมวก', color: '#c3fff1', weight: 1 }, // Gold
+                { text: 'ตุ๊กตา', color: '#f0daff', weight: 1 }, // Tomato
+                { text: 'โน๊ตก้อน', color: '#4BA0D1', weight: 1 }, // SteelBlue
+                { text: 'ของจาก Delta', color: '#c1ff92', weight: 1 }, // LimeGreen
+                { text: 'สมุดโน๊ต', color: '#ffb7b3', weight: 1 } // LightGray
                 // Removed 'ไม่ได้รางวัล' segment to simplify for single play
             ],
             // Spin duration in milliseconds
@@ -574,7 +575,7 @@
                 ctx.closePath();
                 ctx.fillStyle = segment.color;
                 ctx.fill();
-                ctx.strokeStyle = '#fff'; // White segment dividers
+                ctx.strokeStyle = '#18303d'; // White segment dividers
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
@@ -582,8 +583,8 @@
                 ctx.save();
                 ctx.rotate(segment.midAngle);
                 ctx.textAlign = 'right';
-                ctx.fillStyle = '#000'; // Text color
-                ctx.font = 'bold 16px Inter';
+                ctx.fillStyle = '#18303d'; // Text color
+                ctx.font = '18px Inter';
                 ctx.fillText(segment.text, wheelRadius * 0.8, 0); // Position text
                 ctx.restore();
             });
@@ -683,7 +684,7 @@
                 gameSection.classList.remove('hidden');
                 formErrorMessage.classList.add('hidden');
                 spinWheelBtn.disabled = false; // Enable the spin wheel button
-                showModal('ข้อมูลถูกบันทิม', 'ข้อมูลของคุณถูกบันทึกแล้ว! ตอนนี้คุณสามารถหมุนวงล้อได้');
+                //showModal('ข้อมูลถูกบันทิม', 'ข้อมูลของคุณถูกบันทึกแล้ว! ตอนนี้คุณสามารถหมุนวงล้อได้');
             }
         });
 
