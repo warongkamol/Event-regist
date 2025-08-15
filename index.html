@@ -342,11 +342,11 @@
             // weight: The probability weight (all set to 1 for equal segments)
             wheelSegments: [
                 { text: 'Brady', color: '#012169', weight: 0.5 }, 
-                { text: 'โน๊ตก้อน', color: '#ffb7b3', weight: 1 }, 
+                { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }, 
                 { text: 'Delta', color: '#0087DC', weight: 0.5 }, 
-                { text: 'โน๊ตก้อน', color: '#ffb7b3', weight: 1 }, 
-                { text: 'หมวก', color: '#d9ead3', weight: 0.5 },
-                { text: 'โน๊ตก้อน', color: '#ffb7b3', weight: 1 }
+                { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }, 
+                { text: 'หมวก', color: '#a7cd89', weight: 0.5 },
+                { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }
                 // Removed 'ไม่ได้รางวัล' segment to simplify for single play
             ],
             // Spin duration in milliseconds
@@ -584,8 +584,8 @@
                 ctx.save();
                 ctx.rotate(segment.midAngle);
                 ctx.textAlign = 'right';
-                ctx.fillStyle = '#18303d'; // Text color
-                ctx.font = '18px Inter';
+                ctx.fillStyle = '#ffffff'; // Text color
+                ctx.font = '25px Inter';
                 ctx.fillText(segment.text, wheelRadius * 0.8, 0); // Position text
                 ctx.restore();
             });
