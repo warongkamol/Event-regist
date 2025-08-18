@@ -13,7 +13,7 @@
         body {
             font-family: 'Inter', sans-serif;
             
-            background-color: #ffffff;
+            background-color: #3c96c7;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -346,6 +346,7 @@
                 { text: 'Delta', color: '#0087DC', weight: 0.5 }, 
                 { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }, 
                 { text: 'หมวก', color: '#a7cd89', weight: 0.5 },
+		{ text: 'ตุ๊กตา', color: '#33647e', weight: 0.2 },
                 { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }
                 // Removed 'ไม่ได้รางวัล' segment to simplify for single play
             ],
@@ -586,7 +587,7 @@
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#ffffff'; // Text color
                 ctx.font = '25px Inter';
-                ctx.fillText(segment.text, wheelRadius * 0.8, 0); // Position text
+                ctx.fillText(segment.text, wheelRadius * 0.9, 10); // Position text
                 ctx.restore();
             });
             ctx.restore();
@@ -685,7 +686,7 @@
                 gameSection.classList.remove('hidden');
                 formErrorMessage.classList.add('hidden');
                 spinWheelBtn.disabled = false; // Enable the spin wheel button
-                //showModal('ข้อมูลถูกบันทึก', 'ข้อมูลของคุณถูกบันทึกแล้ว! ตอนนี้คุณสามารถหมุนวงล้อได้');
+                //showModal('ข้อมูลถูกบันทิม', 'ข้อมูลของคุณถูกบันทึกแล้ว! ตอนนี้คุณสามารถหมุนวงล้อได้');
             }
         });
 
