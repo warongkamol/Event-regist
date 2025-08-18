@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -347,7 +348,7 @@
                 { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }, 
                 { text: 'หมวก', color: '#a7cd89', weight: 0.5 },
 				{ text: 'ตุ๊กตา', color: '#33647e', weight: 0.2 },
-				{ text: 'i-PRO', color: '#6464E6', weight: 0.5 },
+				{ text: 'iPRO', color: '#1C1F2A', weight: 0.5 },
                 { text: 'โน๊ตก้อน', color: '#e06666', weight: 1 }
                 // Removed 'ไม่ได้รางวัล' segment to simplify for single play
             ],
@@ -593,7 +594,34 @@
             });
             ctx.restore();
             
-            // The pointer is now a separate HTML element, so no drawing here.
+            // Draw the inner circle
+    const innerCircleRadius = wheelRadius * 0.15; // Adjust size as needed
+    const borderColor = '#ffff9e'; // Same as the outer border
+
+
+    // Add shadow to the inner circle
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 5;
+    ctx.shadowOffsetY = 5;
+
+
+    ctx.beginPath();
+    ctx.arc(fixedCanvasSize / 2, fixedCanvasSize / 2, innerCircleRadius, 0, 2 * Math.PI);
+    ctx.fillStyle = borderColor;
+    ctx.fill();
+
+
+    // Remove shadow for the border
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
+
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 5;
+    ctx.stroke();
         }
 
         // Initiates the wheel spin
