@@ -380,18 +380,20 @@
         let isSpinning = false; // Flag to prevent multiple spins
         let customerData = {}; // Stores current customer's data
 
-        // Function to show a custom modal message
-        function showModal(title, message, onCloseCallback = null) {
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            appModal.classList.add('open'); // Show the modal
-            modalCloseBtn.onclick = () => {
-                appModal.classList.remove('open'); // Hide the modal on close
-                if (onCloseCallback) {
-                    onCloseCallback();
-                }
-            };
-        }
+       // Function to show a custom modal message
+		function showModal(title, message, onCloseCallback = null) {
+		    modalTitle.textContent = title;
+		    modalMessage.textContent = message;
+		    appModal.classList.add('open'); // Show the modal
+		
+		    // แก้ไข Event Listener ของปุ่ม 'ตกลง' ที่นี่
+		    modalCloseBtn.onclick = () => {
+		        appModal.classList.remove('open'); // ซ่อน Modal
+		        if (onCloseCallback) {
+		            onCloseCallback();
+		        }
+		    };
+		}
 
         // ---------------------------------------------------
         // Section 1: Form Management
@@ -666,20 +668,37 @@
             wheelCanvas.style.transform = `rotate(${totalTargetRotation}rad)`;
 
             // Actions to perform once the wheel stops spinning
-            setTimeout(() => {
-                isSpinning = false;
-                spinWheelBtn.disabled = true; // Keep spin button disabled after spin
-                prizeDisplay.textContent = `ยินดีด้วย! คุณได้รับ: ${winningSegment.text}`;
-                prizeDisplay.classList.remove('hidden'); // Show the prize
+			setTimeout(() => {
+			    isSpinning = false;
+			    spinWheelBtn.disabled = true; // Keep spin button disabled after spin
+			    prizeDisplay.textContent = `ยินดีด้วย! คุณได้รับ: ${winningSegment.text}`;
+			    prizeDisplay.classList.remove('hidden'); // Show the prize
+			
+			    // Save the prize to the current customer's data
+			    customerData.prize = winningSegment.text;
+			    saveCustomerData(customerData);
+			
+			    // แก้ไขตรงนี้
+			    // ตรวจสอบว่าผู้ใช้ได้รับรางวัลหรือไม่
+			    const prizeText = winningSegment.text;
+			    let modalCallback = null;
+			
+			    // ตรวจสอบว่าเป็นรางวัลที่ไม่ใช่ "ไม่ได้รางวัล"
+			    if (prizeText !== 'ไม่ได้รางวัล') {
+			        // หากได้รับรางวัล ให้กำหนด Callback ที่จะเปิดลิงก์ LINE
+			        modalCallback = () => {
+			            window.open('https://lin.ee/1VOCxYRc', '_blank');
+			        };
+			    }
 
-                // Save the prize to the current customer's data
-                customerData.prize = winningSegment.text;
-                saveCustomerData(customerData);
+    // Show a modal with the prize result
+    showModal('ผลการหมุนวงล้อ', `ยินดีด้วย! คุณได้รับ: ${prizeText}`, modalCallback);
 
-                // Show a modal with the prize result
-                showModal('ผลการหมุนวงล้อ', `ยินดีด้วย! คุณได้รับ: ${winningSegment.text}`, () => {
-                    // No specific action needed after modal close, as reset button is no longer available
-                });
+    // Reset rotation for the next spin (if not reset by button)
+    currentRotation = totalTargetRotation % (2 * Math.PI);
+    wheelCanvas.style.transition = 'none'; // Remove transition for instant reset
+    wheelCanvas.style.transform = `rotate(${currentRotation}rad)`; // Snap to final position
+}, APP_CONFIG.spinSpeed);
 
                 // Reset rotation for the next spin (if not reset by button)
                 currentRotation = totalTargetRotation % (2 * Math.PI);
